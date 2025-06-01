@@ -13,6 +13,7 @@ import {
   useTheme,
   SxProps,
   Theme,
+  Tooltip,
 } from "@mui/material";
 import {
   MoreVert as MoreVertIcon,
@@ -20,19 +21,29 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Schedule as ScheduleIcon,
+  LockOutlined,
 } from "@mui/icons-material";
 import { formatDistanceToNow } from "date-fns";
 import { Report } from "../types/report";
+import { useAuth } from "../context/AuthContext";
 
 interface Props {
   report: Report;
   onView: () => void;
   onEdit: () => void;
+  onDelete?: () => void;
   variant?: "default" | "featured";
 }
 
-const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
+const ReportCard = ({
+  report,
+  onView,
+  onEdit,
+  onDelete,
+  variant = "default",
+}: Props) => {
   const theme = useTheme();
+  const { isAdmin } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -55,6 +66,8 @@ const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
     display: "flex",
     flexDirection: "column",
     transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+    borderRadius: 2,
+    minHeight: 220,
     "&:hover": {
       transform: "translateY(-4px)",
       boxShadow: theme.shadows[8],
@@ -146,14 +159,40 @@ const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
               <ViewIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
               View
             </MenuItem>
-            <MenuItem onClick={onEdit}>
-              <EditIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-              Edit
-            </MenuItem>
-            <MenuItem disabled>
-              <DeleteIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-              Delete
-            </MenuItem>
+            {isAdmin ? (
+              <MenuItem onClick={onEdit}>
+                <EditIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
+                Edit
+              </MenuItem>
+            ) : (
+              <MenuItem disabled>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <EditIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
+                  Edit
+                  <LockOutlined
+                    fontSize="small"
+                    sx={{ ml: 1, opacity: 0.6, fontSize: "0.9rem" }}
+                  />
+                </Box>
+              </MenuItem>
+            )}
+            {isAdmin ? (
+              <MenuItem onClick={onDelete}>
+                <DeleteIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
+                Delete
+              </MenuItem>
+            ) : (
+              <MenuItem disabled>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <DeleteIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
+                  Delete
+                  <LockOutlined
+                    fontSize="small"
+                    sx={{ ml: 1, opacity: 0.6, fontSize: "0.9rem" }}
+                  />
+                </Box>
+              </MenuItem>
+            )}
           </Menu>
         </Box>
 
@@ -183,13 +222,17 @@ const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
         sx={{
           mt: "auto",
           p: 2,
-          pt: 0,
+          pt: 1,
           borderTop: "1px solid",
           borderColor: "divider",
-          justifyContent: "space-between",
+          flexDirection: "column",
+          alignItems: "flex-start",
+          gap: 1.5,
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box
+          sx={{ display: "flex", alignItems: "center", width: "100%", ml: 1.5 }}
+        >
           <ScheduleIcon
             fontSize="small"
             sx={{ mr: 0.5, color: "text.secondary", fontSize: "1rem" }}
@@ -198,7 +241,7 @@ const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
             {timeAgo}
           </Typography>
         </Box>
-        <Box>
+        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
           <Button
             size="small"
             onClick={onView}
@@ -213,20 +256,83 @@ const ReportCard = ({ report, onView, onEdit, variant = "default" }: Props) => {
           >
             View
           </Button>
-          <Button
-            size="small"
-            onClick={onEdit}
-            startIcon={<EditIcon fontSize="small" />}
-            sx={{
-              textTransform: "none",
-              color: "text.secondary",
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-          >
-            Edit
-          </Button>
+          {isAdmin ? (
+            <>
+              <Button
+                size="small"
+                onClick={onEdit}
+                startIcon={<EditIcon fontSize="small" />}
+                sx={{
+                  textTransform: "none",
+                  color: "text.secondary",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+              >
+                Edit
+              </Button>
+              <Button
+                size="small"
+                onClick={onDelete}
+                startIcon={<DeleteIcon fontSize="small" />}
+                sx={{
+                  textTransform: "none",
+                  color: "error.main",
+                  "&:hover": {
+                    backgroundColor: "action.hover",
+                  },
+                }}
+              >
+                Delete
+              </Button>
+            </>
+          ) : (
+            <>
+              <Tooltip title="Viewer accounts cannot edit reports">
+                <span>
+                  <Button
+                    size="small"
+                    disabled
+                    startIcon={<EditIcon fontSize="small" />}
+                    endIcon={
+                      <LockOutlined
+                        fontSize="small"
+                        sx={{ fontSize: "0.9rem" }}
+                      />
+                    }
+                    sx={{
+                      textTransform: "none",
+                      color: "text.disabled",
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </span>
+              </Tooltip>
+              <Tooltip title="Viewer accounts cannot delete reports">
+                <span>
+                  <Button
+                    size="small"
+                    disabled
+                    startIcon={<DeleteIcon fontSize="small" />}
+                    endIcon={
+                      <LockOutlined
+                        fontSize="small"
+                        sx={{ fontSize: "0.9rem" }}
+                      />
+                    }
+                    sx={{
+                      textTransform: "none",
+                      color: "text.disabled",
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </span>
+              </Tooltip>
+            </>
+          )}
         </Box>
       </CardActions>
     </Card>

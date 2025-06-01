@@ -10,9 +10,11 @@ import {
   CardContent,
   Snackbar,
   Alert,
+  Tooltip,
 } from "@mui/material";
-import { Add, Search } from "@mui/icons-material";
+import { Add, Search, LockOutlined } from "@mui/icons-material";
 import { useReports } from "../context/ReportsContext";
+import { useAuth } from "../context/AuthContext";
 import { Report, UpdateReportDTO } from "../types/report";
 import ReportList from "../components/ReportList";
 import CreateReportDialog from "../components/dialogs/CreateReportDialog";
@@ -21,7 +23,8 @@ import EditReportDialog from "../components/dialogs/EditReportDialog";
 import ErrorBoundary from "../components/ErrorBoundary";
 
 const Dashboard = () => {
-  const { reports, addReport, updateReport } = useReports();
+  const { reports, addReport, updateReport, deleteReport } = useReports();
+  const { isAdmin } = useAuth();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [dialogState, setDialogState] = useState({
@@ -87,6 +90,17 @@ const Dashboard = () => {
     }
   };
 
+  const handleDeleteReport = async (report: Report) => {
+    try {
+      await deleteReport(report.id);
+      showSnackbar("Report deleted successfully", "success");
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to delete report";
+      showSnackbar(message, "error");
+    }
+  };
+
   const openViewDialog = (report: Report) => {
     setDialogState({
       ...dialogState,
@@ -147,20 +161,46 @@ const Dashboard = () => {
                   },
                 }}
               />
-              <Button
-                fullWidth
-                variant="contained"
-                startIcon={<Add />}
-                onClick={openCreateDialog}
-                sx={{
-                  height: 56,
-                  borderRadius: 2,
-                  textTransform: "none",
-                  fontWeight: 600,
-                }}
-              >
-                New Report
-              </Button>
+              {isAdmin ? (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={<Add />}
+                  onClick={openCreateDialog}
+                  sx={{
+                    height: 56,
+                    borderRadius: 2,
+                    textTransform: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  New Report
+                </Button>
+              ) : (
+                <Tooltip title="Viewer accounts cannot create reports">
+                  <span>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<Add />}
+                      disabled
+                      sx={{
+                        height: 56,
+                        borderRadius: 2,
+                        textTransform: "none",
+                        fontWeight: 600,
+                      }}
+                    >
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        New Report
+                        <LockOutlined fontSize="small" />
+                      </Box>
+                    </Button>
+                  </span>
+                </Tooltip>
+              )}
             </Box>
           </CardContent>
         </Card>
@@ -191,6 +231,7 @@ const Dashboard = () => {
             reports={filteredReports}
             onView={openViewDialog}
             onEdit={openEditDialog}
+            onDelete={handleDeleteReport}
           />
         </ErrorBoundary>
       )}

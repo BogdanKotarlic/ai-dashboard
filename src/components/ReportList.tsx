@@ -24,9 +24,10 @@ interface Props {
   reports: Report[];
   onView: (report: Report) => void;
   onEdit: (report: Report) => void;
+  onDelete: (report: Report) => void;
 }
 
-const ReportList = ({ reports, onView, onEdit }: Props) => {
+const ReportList = ({ reports, onView, onEdit, onDelete }: Props) => {
   const { reorderReports } = useReports();
   const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -146,6 +147,7 @@ const ReportList = ({ reports, onView, onEdit }: Props) => {
                         report={report}
                         onView={() => onView(report)}
                         onEdit={() => onEdit(report)}
+                        onDelete={() => onDelete(report)}
                       />
                     </Box>
                   ))}
