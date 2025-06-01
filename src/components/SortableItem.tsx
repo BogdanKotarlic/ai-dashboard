@@ -35,8 +35,8 @@ const SortableItem = ({ id, report, onView, onEdit, onDelete }: Props) => {
     () => ({
       transform: CSS.Transform.toString(transform),
       transition,
-      opacity: isDragging ? 0.6 : 1,
-      zIndex: isDragging ? 1000 : 1,
+      opacity: isDragging && transform ? 0.6 : 1,
+      zIndex: isDragging && transform ? 1000 : 1,
       position: "relative" as const,
     }),
     [transform, transition, isDragging]

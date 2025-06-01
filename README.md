@@ -1,46 +1,93 @@
-# Getting Started with Create React App
+# AI-Enhanced Intelligence Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive dashboard for creating, managing, and analyzing intelligence reports with AI assistance. This application allows users to create, edit, view, and organize reports with role-based access control and drag-and-drop functionality.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- **Report Management**
+  - Create, edit, view, and delete reports
+  - Search and filter reports by title
+  - Rich text editing with TinyMCE
+  - Drag and drop reordering of reports
 
-### `npm start`
+- **AI Assistant Integration**
+  - Generate draft reports based on user prompts
+  - Summarize existing report content
+  - AI-powered content suggestions
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Role-Based Access Control**
+  - Admin role: Full access to create, edit, delete, and reorder reports
+  - Viewer role: Read-only access with restricted UI controls
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- **Modern UI/UX**
+  - Responsive Material UI design
+  - Intuitive card-based interface
+  - Visual feedback for user actions
+  - Drag and drop functionality with visual cues
 
-### `npm test`
+## Setup Instructions
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+- Node.js (v16 or higher)
+- npm or yarn
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Clone the repository
+   ```
+   git clone https://github.com/BogdanKotarlic/ai-dashboard.git
+   cd ai-dashboard
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Install dependencies
+   ```
+   npm install
+   # or
+   yarn install
+   ```
 
-### `npm run eject`
+3. Start the development server
+   ```
+   npm start
+   # or
+   yarn start
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+4. Open [http://localhost:3000](http://localhost:3000) to view the application
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## AI Integration Explanation
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+This dashboard integrates with OpenAI's API to provide AI-powered features:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### 1. Report Generation
 
-## Learn More
+The "Generate Draft" feature uses OpenAI's GPT model to create initial report drafts based on user prompts. The system sends a structured prompt to the API and formats the response as a draft report.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Content Summarization
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The "Summarize Content" feature analyzes existing report content and generates concise summaries. This is particularly useful for long reports or when preparing executive summaries.
+
+### 3. Implementation Details
+
+- Requests are debounced to prevent excessive API calls
+- Error handling includes fallbacks for API failures
+- Mock implementations are available for development without API keys
+
+## Known Limitations and Assumptions
+
+### Authentication & Security
+
+- The application uses a simplified mock authentication system
+- User roles (Admin/Viewer) are stored in localStorage for demonstration purposes
+- In a production environment, proper authentication with JWT or similar should be implemented
+
+### Data Persistence
+
+- Reports are stored in localStorage and will be lost if browser data is cleared
+- No backend database integration is currently implemented
+
+### AI Integration
+
+- The OpenAI integration is mocked in the demo version
+- Rate limits and token usage are not actively managed

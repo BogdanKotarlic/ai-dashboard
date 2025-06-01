@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -6,9 +5,6 @@ import {
   Button,
   Typography,
   Box,
-  IconButton,
-  Menu,
-  MenuItem,
   Chip,
   useTheme,
   SxProps,
@@ -16,7 +12,6 @@ import {
   Tooltip,
 } from "@mui/material";
 import {
-  MoreVert as MoreVertIcon,
   Visibility as ViewIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
@@ -44,17 +39,6 @@ const ReportCard = ({
 }: Props) => {
   const theme = useTheme();
   const { isAdmin } = useAuth();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    event.stopPropagation();
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
 
   const timeAgo = formatDistanceToNow(
     report.updatedAt ? new Date(report.updatedAt) : new Date(),
@@ -128,72 +112,6 @@ const ReportCard = ({
             color={report.status === "published" ? "primary" : "default"}
             variant="outlined"
           />
-          <IconButton
-            size="small"
-            onClick={handleMenuOpen}
-            sx={{
-              margin: "-8px -8px 0 0",
-              color: "text.secondary",
-              "&:hover": {
-                backgroundColor: "action.hover",
-              },
-            }}
-          >
-            <MoreVertIcon fontSize="small" />
-          </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleMenuClose}
-            onClick={(e) => e.stopPropagation()}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-          >
-            <MenuItem onClick={onView}>
-              <ViewIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-              View
-            </MenuItem>
-            {isAdmin ? (
-              <MenuItem onClick={onEdit}>
-                <EditIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-                Edit
-              </MenuItem>
-            ) : (
-              <MenuItem disabled>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <EditIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-                  Edit
-                  <LockOutlined
-                    fontSize="small"
-                    sx={{ ml: 1, opacity: 0.6, fontSize: "0.9rem" }}
-                  />
-                </Box>
-              </MenuItem>
-            )}
-            {isAdmin ? (
-              <MenuItem onClick={onDelete}>
-                <DeleteIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-                Delete
-              </MenuItem>
-            ) : (
-              <MenuItem disabled>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <DeleteIcon fontSize="small" sx={{ mr: 1, opacity: 0.6 }} />
-                  Delete
-                  <LockOutlined
-                    fontSize="small"
-                    sx={{ ml: 1, opacity: 0.6, fontSize: "0.9rem" }}
-                  />
-                </Box>
-              </MenuItem>
-            )}
-          </Menu>
         </Box>
 
         <Typography variant="h6" component="h3" sx={titleSx}>
