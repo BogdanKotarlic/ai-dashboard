@@ -6,6 +6,7 @@ export interface ReportsContextType {
   updateReport: (id: string, updates: Partial<Report>) => Promise<void>;
   deleteReport: (id: string) => Promise<void>;
   getReport: (id: string) => Report | undefined;
+  reorderReports: (activeId: string, overId: string) => void;
   error: ReportsError | null;
   clearError: () => void;
 }

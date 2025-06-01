@@ -148,6 +148,21 @@ export const ReportsProvider = ({
     [reports]
   );
 
+  const reorderReports = useCallback((activeId: string, overId: string) => {
+    setReports((prev) => {
+      const oldIndex = prev.findIndex((report) => report.id === activeId);
+      const newIndex = prev.findIndex((report) => report.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1) return prev;
+
+      const newReports = [...prev];
+      const [movedReport] = newReports.splice(oldIndex, 1);
+      newReports.splice(newIndex, 0, movedReport);
+
+      return newReports;
+    });
+  }, []);
+
   const value = useMemo(
     () => ({
       reports,
@@ -155,6 +170,7 @@ export const ReportsProvider = ({
       updateReport,
       deleteReport,
       getReport,
+      reorderReports,
       error,
       clearError,
     }),
@@ -164,6 +180,7 @@ export const ReportsProvider = ({
       updateReport,
       deleteReport,
       getReport,
+      reorderReports,
       error,
       clearError,
     ]
